@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百诺国際商事 - フィットネス機器専門店</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: white;
+            background-color: #000;
+            overflow-x: hidden;
+        }
+        
+        .nav-scroll {
+            background-color: rgba(0, 0, 0, 0.9) !important;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dot-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .dot-hover:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        }
+        
+        .dot-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+        
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .category-item {
+            transition: all 0.2s ease;
+        }
+        
+        .category-item:hover, .category-item.active {
+            border-left: 4px solid #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .delivery-option {
+            transition: all 0.2s ease;
+        }
+        
+        .delivery-option.active {
+            border: 2px solid #ef4444;
+        }
+        
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .mobile-menu.active {
+            max-height: 500px;
+        }
+        
+        /* 侧边栏修改样式 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100vh;
+            background-color: #000;
+            z-index: 60;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            padding-top: 20px;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 50;
+            display: none;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        .category-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 40;
+            background-color: #ef4444;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .category-toggle:hover {
+            transform: scale(1.05);
+            background-color: #dc2626;
+        }
+        
+        /* 业务卡片展开样式 */
+        .business-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .business-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .business-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .business-card.active .business-details {
+            max-height: 1000px;
+        }
+        
+        .business-card.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        /* 图片轮播样式 */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-cover: cover;
+        }
+        
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .carousel-indicator.active {
+            background-color: #ef4444;
+        }
+        
+        /* 咨询表单弹窗样式 */
+        .consultation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .consultation-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .consultation-modal {
+            background-color: white;
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            color: black;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-btn:hover {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .consultation-modal h3 {
+            color: #ef4444;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏切换按钮 -->
+    <div class="category-toggle" id="categoryToggle">
+        <i class="fas fa-filter"></i>
+    </div>
+    
+    <!-- 侧边栏遮罩层 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 w-full bg-black bg-opacity-70 z-30 py-4 px-6" id="mainNav">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold text-white">
+                百诺国際商事
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <div class="text-white">
+                    〒653-0002 兵庫県神戸市長田区六番町７丁目２−２
+                </div>
+                <div class="text-white">
+                    10:00-20:00（水曜定休）
+                </div>
+                <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition btn-hover">
+                    店舗を予約
+                </button>
+            </div>
+            
+            <button class="md:hidden text-white text-2xl" id="mobileMenuButton">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div class="mobile-menu bg-black bg-opacity-90 w-full" id="mobileMenu">
+            <div class="container mx-auto py-4 px-6 flex flex-col space-y-4">
+                <div class="text-white">
+                    〒653-0002 兵庫県神戸市長田区六番町７丁目２−２
+                </div>
+                <div class="text-white">
+                    10:00-20:00（水曜定休）
+                </div>
+                <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition btn-hover">
+                    店舗を予約
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="flex pt-16">
+        <!-- 侧边栏 -->
+        <div class="sidebar" id="sidebar">
+            <div class="px-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-red-600 text-xl font-bold">製品カテゴリー</h3>
+                    <button class="text-white text-xl" id="closeSidebar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <ul class="space-y-2">
+                    <li class="category-item active text-white py-2 px-4 cursor-pointer" data-category="all">
+                        すべての製品
+                    </li>
+                    <li class="category-item text-white py-2 px-4 cursor-pointer" data-category="fitness">
+                        フィットネス器材
+                    </li>
+                    <li class="category-item text-white py-2 px-4 cursor-pointer" data-category="protein">
+                        タンパク質パウダー
+                    </li>
+                    <li class="category-item text-white py-2 px-4 cursor-pointer" data-category="wear">
+                        ウェア＆アクセサリー
+                    </li>
+                    <li class="category-item text-white py-2 px-4 cursor-pointer" data-category="training">
+                        トレーニング機器
+                    </li>
+                    <li class="category-item text-white py-2 px-4 cursor-pointer" data-category="recovery">
+                        回復支援製品
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 主体内容 -->
+        <div class="w-full">
+            <!-- 健身房系列 -->
+            <section class="relative h-screen" id="gym-series">
+                <img src="https://s.coze.cn/t/AnpkSdX1V74/" alt="ジム全景" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                    <div class="text-center px-4">
+                        <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white">ジムシリーズ</h2>
+                        <p class="text-xl text-white max-w-2xl mx-auto">プロフェッショナル向けの高品質フィットネス機器</p>
+                    </div>
+                </div>
+                
+                <!-- 标注点（已增大尺寸为w-5 h-5） -->
+                <div class="absolute top-1/3 left-1/4 w-5 h-5 bg-white border-2 border-red-600 rounded-full cursor-pointer dot-hover dot-pulse" 
+                     data-modal="treadmill"></div>
+                <div class="absolute top-1/2 left-1/2 w-5 h-5 bg-white border-2 border-red-600 rounded-full cursor-pointer dot-hover dot-pulse" 
+                     data-modal="training-rack"></div>
+                <div class="absolute top-2/3 left-3/4 w-5 h-5 bg-white border-2 border-red-600 rounded-full cursor-pointer dot-hover dot-pulse" 
+                     data-modal="dumbbell-set"></div>
+            </section>
+
+            <!-- 家庭健身系列 -->
+            <section class="relative h-screen" id="home-series">
+                <img src="https://s.coze.cn/t/cpuP98PkVSQ/" alt="家庭用全景" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                    <div class="text-center px-4">
+                        <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white">家庭用フィットネスシリーズ</h2>
+                        <p class="text-xl text-white max-w-2xl mx-auto">コンパクトで多機能な家庭用トレーニング機器</p>
+                    </div>
+                </div>
+                
+                <!-- 标注点（已增大尺寸为w-5 h-5） -->
+                <div class="absolute top-1/3 left-1/4 w-5 h-5 bg-white border-2 border-red-600 rounded-full cursor-pointer dot-hover dot-pulse" 
+                     data-modal="folding-treadmill"></div>
+                <div class="absolute top-1/2 left-1/2 w-5 h-5 bg-white border-2 border-red-600 rounded-full cursor-pointer dot-hover dot-pulse" 
+                     data-modal="electric-dumbbell"></div>
+                <div class="absolute top-2/3 left-3/4 w-5 h-5 bg-white border-2 border-red-600 rounded-full cursor-pointer dot-hover dot-pulse" 
+                     data-modal="yoga-set"></div>
+            </section>
+
+            <!-- 公司业务介绍 -->
+            <section class="py-16 px-4 md:px-8 bg-white text-black">
+                <div class="container mx-auto">
+                    <h2 class="text-3xl font-bold mb-12 text-center">会社事業紹介</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- 越境電子商取引物流 -->
+                        <div class="business-card bg-gray-100 p-6 rounded-lg border border-gray-200" data-business="crossborder">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="text-red-600 text-3xl">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <i class="fas fa-chevron-down toggle-icon text-red-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">越境電子商取引物流</h3>
+                            <p class="text-gray-700 mb-4">
+                                Japan FBAヘッドコース、中国保税倉庫ストレート、小包専用線、電子商取引販売者の中日市場開拓を支援するサービスを提供しています。
+                            </p>                            
+                            <div class="business-details">                                
+                                <div class="mt-6 pt-6 border-t border-gray-3">
+                                    <img src="https://s.coze.cn/t/u8f5SQQ4qRo/" alt="越境電子商取引物流示意图" class="w-full h-auto rounded-lg mb-4">
+                                    <h4 class="text-lg font-bold mb-2 text-red">サービス詳細</h4>                                    
+                                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                        <li>日本FBAヘッドフォワーディングサービス</li>
+                                        <li>中国保税倉庫直送サービス</li>                                        
+                                        <li>小包専用線（7-10営業日配達）</li>
+                                        <li>関税算出・申告代行サービス</li>                                        
+                                        <li>在庫管理システム提供</li>
+                                        <li>中日マーケティングコンサルティング</li>
+                                    </ul>                                    
+                                    <p class="mt-4 text-gray-700">
+                                        <strong>特長：</strong>当社の越境物流ネットワークは、中国発日本への商品流通を最適化し、電子商取引事業者の海外展開を全力で支援いたします。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 企業サプライチェーンサービス -->
+                        <div class="business-card bg-gray-100 p-6 rounded-lg border border-gray-200" data-business="supplychain">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="text-red-600 text-3xl">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <i class="fas fa-chevron-down toggle-icon text-red-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">企業サプライチェーンサービス</h3>
+                            <p class="text-gray-700 mb-4">
+                                製造業、小売業などにカスタム化輸送、倉庫保管及び付加価値サービスを提供し、サプライチェーン効率を最適化する。
+                            </p>
+                            
+                            <div class="business-details">
+                                <div class="mt-6 pt-6 border-t border-gray-300">
+                                    <img src="https://s.coze.cn/t/BbMmMwz30z8/" alt="企業サプライチェーンサービス" class="w-full h-48 object-cover rounded-lg mb-4">
+                                    <h4 class="text-lg font-bold mb-2 text-red-600">サービス詳細</h4>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                        <li>カスタマイズされた輸送ルート設計</li>
+                                        <li>全国ネットワークの倉庫保管サービス</li>
+                                        <li>梱包・ラベリング・検品などの付加価値サービス</li>
+                                        <li>リアルタイム在庫管理システム</li>
+                                        <li>需要予測と在庫最適化コンサルティング</li>
+                                        <li>国際物流と国内配送のシームレス統合</li>
+                                    </ul>
+                                    <p class="mt-4 text-gray-700">
+                                        当社は企業のサプライチェーン全体を見直し、コスト削減と効率化を実現するための包括的なソリューションを提供します。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 個人越境サービス -->
+                        <div class="business-card bg-gray-100 p-6 rounded-lg border border-gray-200" data-business="personal">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="text-red-600 text-3xl">
+                                    <i class="fas fa-suitcase"></i>
+                                </div>
+                                <i class="fas fa-chevron-down toggle-icon text-red-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">個人越境サービス</h3>
+                            <p class="text-gray-700 mb-4">
+                                中日双方向荷物託送、個人物品輸送、多国籍生活をより便利にする。
+                            </p>
+                            
+                            <div class="business-details">
+                                <div class="mt-6 pt-6 border-t border-gray-300">
+                                    <img src="https://s.coze.cn/t/ziC9hpP_v8I/" alt="個人越境サービス" class="w-full h-48 object-cover rounded-lg mb-4">
+                                    <h4 class="text-lg font-bold mb-2 text-red-600">サービス詳細</h4>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                        <li>中日双方向荷物郵送サービス</li>
+                                        <li>留学生荷物・引越し専門サービス</li>
+                                        <li>高価品・壊れやすい品の専門梱包</li>
+                                        <li>関税申告代行サービス</li>
+                                        <li>オンライン追跡システム</li>
+                                        <li>手続きサポート（書類作成アシスタンス）</li>
+                                    </ul>
+                                    <p class="mt-4 text-gray-700">
+                                        国を越える個人物品の輸送に関するあらゆるニーズにお応えします。安心・安全・迅速なサービスで多国籍生活をサポートします。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- スポーツ器材投資誘致 -->
+                        <div class="business-card bg-red-50 border-2 border-red-600 p-6 rounded-lg" data-business="sports">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="text-red-600 text-3xl">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <i class="fas fa-chevron-down toggle-icon text-red-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">スポーツ器材投資誘致</h3>
+                            <p class="text-gray-700 mb-4">
+                                中国本土運動ブランドの海外進出を支援し、国際運動ブランド展示会への参加を手配する。
+                            </p>
+                            
+                            <div class="business-details">
+                                <div class="mt-6 pt-6 border-t border-red-200">
+                                    <img src="https://s.coze.cn/t/z3KJLXmPwGc/" alt="スポーツ器材投資誘致" class="w-full h-48 object-cover rounded-lg mb-4">
+                                    <h4 class="text-lg font-bold mb-2 text-red-600">サービス詳細</h4>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                        <li>国際展示会出展手配（ISPO、SPORTECなど）</li>
+                                        <li>海外市場調査と分析レポート作成</li>
+                                        <li>ブランド戦略とマーケティングコンサルティング</li>
+                                        <li>現地販売ネットワーク構築支援</li>
+                                        <li>貿易契約支援とパートナーマッチング</li>
+                                        <li>多言語対応のプロモーション資料作成</li>
+                                    </ul>
+                                    <p class="mt-4 text-gray-700">
+                                        中国の優れたスポーツ器材ブランドの国際展開を全力で支援し、世界市場での事業拡大を実現いたします。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 新增板块：帮助中国体育用品出海 -->
+            <section class="py-16 px-4 md:px-8 bg-gray-900 text-white">
+                <div class="container mx-auto">
+                    <div class="mb-12 text-center">
+                        <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white">帮助中国体育用品出海</h2>
+                        <p class="text-xl text-gray-300 max-w-3xl mx-auto">中国製品の海外進出と投資誘致を支援する包括的サービス</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-6 text-red-600">専門的な国際展開支援サービス</h3>
+                            <div class="space-y-4 text-gray-300">
+                                <div class="flex items-start">
+                                    <div class="text-red-600 mr-4 mt-1"><i class="fas fa-check-circle"></i></div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-white mb-1">市場分析と位置づけ</h4>
+                                        <p>ターゲット国の市場ニーズ、競争状況、規制要件を包括的に分析し、製品の最適な位置づけ戦略を策定します。</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="text-red-600 mr-4 mt-1"><i class="fas fa-check-circle"></i></div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-white mb-1">国際展示会出展支援</h4>
+                                        <p>世界主要な体育用品展示会（ISPO、SPORTEC、China Sport Showなど）への出展手配、ブースデザイン、現地運営を一括支援します。</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="text-red-600 mr-4 mt-1"><i class="fas fa-check-circle"></i></div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-white mb-1">ブランドローカリゼーション</h4>
+                                        <p>現地語への資料翻訳、カルチャーフィットなマーケティング資料作成、現地メディアとのコラボレーションを通じてブランド認知度を向上させます。</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="text-red-600 mr-4 mt-1"><i class="fas fa-check-circle"></i></div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-white mb-1">貿易パートナーマッチング</h4>
+                                        <p>現地の卸売業者、小売業者、オンラインプラットフォームとのビジネスマッチングイベントの開催と商談サポートを提供します。</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="text-red-600 mr-4 mt-1"><i class="fas fa-check-circle"></i></div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-white mb-1">事後フォローアップ</h4>
+                                        <p>展示会後の顧客管理、販売データ分析、継続的なマーケティングサポートを通じて長期的なビジネス関係を構築します。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 图片轮播 -->
+                        <div class="carousel-container">
+                            <div class="carousel-slide active">
+                                <img src="https://s.coze.cn/t/LvAoFbgZaG4/" alt="体育用品展览会全景图">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://s.coze.cn/t/dvohmaUZbpk/" alt="体育用品展台特写">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://s.coze.cn/t/CHi0lhwASm4/" alt="国際体育用品展会観客交流シーン">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://s.coze.cn/t/IAZB-F9G0b0/" alt="体育用品展会オープニングセレモニー">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://s.coze.cn/t/gxHeHWzu3HI/" alt="フィットネス器材製品展示詳細">
+                            </div>
+                            
+                            <!-- 轮播指示器 -->
+                            <div class="carousel-indicators">
+                                <div class="carousel-indicator active" data-index="0"></div>
+                                <div class="carousel-indicator" data-index="1"></div>
+                                <div class="carousel-indicator" data-index="2"></div>
+                                <div class="carousel-indicator" data-index="3"></div>
+                                <div class="carousel-indicator" data-index="4"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button id="consultationBtn" class="bg-red-600 text-white px-8 py-4 rounded-lg text-lg font-bold hover:bg-red-700 transition btn-hover">
+                            国際展開相談を申し込む
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 底部预订和咨询 -->
+            <section class="bg-black py-16 px-4 md:px-8">
+                <div class="container mx-auto">
+                    <h2 class="text-3xl font-bold mb-12 text-center">予約・お問い合わせ</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <!-- 预订入口 -->
+                        <div>
+                            <h3 class="text-2xl font-bold mb-6 text-white">同梱製品オンライン予約</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div class="delivery-option active bg-gray-900 p-6 rounded-lg cursor-pointer">
+                                    <div class="text-red-600 text-2xl mb-4">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <h4 class="text-xl font-bold mb-2 text-white">店舗受け取り</h4>
+                                    <p class="text-gray-400">
+                                        ご注文後、指定店舗で商品を受け取ることができます。
+                                    </p>
+                                </div>
+                                
+                                <div class="delivery-option bg-gray-900 p-6 rounded-lg cursor-pointer">
+                                    <div class="text-red-600 text-2xl mb-4"> 
+                                        <i class="fas fa-shipping-fast"></i>
+                                    </div>
+                                    <h4 class="text-xl font-bold mb-2 text-white">宅配便配送</h4>
+                                    <p class="text-gray-400">
+                                        指定住所へ商品を配送いたします。全国一律送料無料。
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full bg-red-600 text-white py-3 rounded hover:bg-red-700 transition btn-hover">
+                                予約を開始する
+                            </button>
+                            
+                            <!-- 店舗所在地（仅文本版） -->
+                            <div class="mt-12 bg-gray-900 p-6 rounded-lg">
+                                <h4 class="text-xl font-bold mb-4 text-white">店舗所在地</h4>
+                                
+                                <div class="text-gray-300 space-y-3">
+                                    <p class="text-lg font-bold">百诺国際商事会社</p>
+                                    <p class="flex items-start">
+                                        <i class="fas fa-map-marker-alt text-red-600 mt-1 mr-3"></i>
+                                        <span>〒653-0002 兵庫県神戸市長田区六番町７丁目２−２</span>
+                                    </p>
+                                    <p class="flex items-center">
+                                        <i class="fas fa-clock text-red-600 mr-3"></i>
+                                        <span>営業時間: 10:00-20:00（水曜定休）</span>
+                                    </p>
+                                    <p class="flex items-center">
+                                        <i class="fas fa-phone text-red-600 mr-3"></i>
+                                        <span>電話: 078-XXXX-XXXX</span>
+                                    </p>
+                                    <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition btn-hover w-full">
+                                        <i class="fas fa-directions mr-2"></i>ルートを取得
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 咨询表单 -->
+                        <div>
+                            <h3 class="text-2xl font-bold mb-6 text-white">デザイナーコーディネート相談</h3>
+                            
+                            <form class="space-y-4">
+                                <div>
+                                    <label for="name" class="block text-gray-400 mb-2">お名前</label>
+                                    <input type="text" id="name" class="w-full bg-gray-900 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-red-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="phone" class="block text-gray-400 mb-2">電話番号</label>
+                                    <input type="tel" id="phone" class="w-full bg-gray-900 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-red-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="email" class="block text-gray-400 mb-2">メールアドレス</label>
+                                    <input type="email" id="email" class="w-full bg-gray-900 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-red-500">
+                                </div>
+                                
+                                <div>
+                                    <label for="message" class="block text-gray-400 mb-2">相談内容</label>
+                                    <textarea id="message" rows="4" class="w-full bg-gray-900 border border-gray-700 rounded px-4 py-3 text-white focus:outline-none focus:border-red-500"></textarea>
+                                </div>
+                                
+                                <button type="button" class="w-full bg-red-600 text-white py-3 rounded hover:bg-red-700 transition btn-hover" id="submitForm">
+                                    送信
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 咨询表单弹窗 -->
+    <div class="consultation-overlay" id="consultationOverlay">
+        <div class="consultation-modal">
+            <button class="close-btn" id="closeConsultation">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3>国際展開相談フォーム</h3>
+            <form id="internationalForm" class="space-y-4">
+                <div class="form-group">
+                    <label for="consultName">お名前</label>
+                    <input type="text" id="consultName" required>
+                </div>
+                <div class="form-group">
+                    <label for="consultPhone">連絡電話</label>
+                    <input type="tel" id="consultPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="consult需求内容">需求内容</label>
+                    <textarea id="consult需求内容" required></textarea>
+                </div>
+                <button type="button" class="submit-btn" id="submitConsultation">送信</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 产品弹窗 -->
+    <div class="modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 p-6 rounded-lg w-80 z-50" id="treadmill">
+        <h3 class="text-red-600 text-xl font-bold mb-2">プレミアムランニングマシン</h3>
+        <p class="text-white mb-1"><strong>材質:</strong> スチールフレーム+PVCベルト</p>
+        <p class="text-white mb-1"><strong>価格:</strong> ¥129,000</p>
+        <p class="text-white mb-4"><strong>体験案内:</strong> 店内にて実際の走行感を体験可能</p>
+        <button class="close-modal text-red-600 hover:text-white">閉じる</button>
+    </div>
+    
+    <div class="modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 p-6 rounded-lg w-80 z-50" id="training-rack">
+        <h3 class="text-red-600 text-xl font-bold mb-2">多機能トレーニングラック</h3>
+        <p class="text-white mb-1"><strong>材質:</strong> 高炭素鋼+ウレタンコーティング</p>
+        <p class="text-white mb-1"><strong>価格:</strong> ¥189,000</p>
+        <p class="text-white mb-4"><strong>体験案内:</strong> 専門スタッフがトレーニングメニューを提案</p>
+        <button class="close-modal text-red-600 hover:text-white">閉じる</button>
+    </div>
+    
+    <div class="modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 p-6 rounded-lg w-80 z-50" id="dumbbell-set">
+        <h3 class="text-red-600 text-xl font-bold mb-2">オリジナルダンベルセット</h3>
+        <p class="text-white mb-1"><strong>材質:</strong> 鋳鉄+ゴムカバー</p>
+        <p class="text-white mb-1"><strong>価格:</strong> ¥75,000</p>
+        <p class="text-white mb-4"><strong>体験案内:</strong> 重量調節機能を実演いたします</p>
+        <button class="close-modal text-red-600 hover:text-white">閉じる</button>
+    </div>
+    
+    <div class="modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 p-6 rounded-lg w-80 z-50" id="folding-treadmill">
+        <h3 class="text-red-600 text-xl font-bold mb-2">コンパクトフォールディングランナー</h3>
+        <p class="text-white mb-1"><strong>材質:</strong> アルミフレーム+ゴムベルト</p>
+        <p class="text-white mb-1"><strong>価格:</strong> ¥89,000</p>
+        <p class="text-white mb-4"><strong>体験案内:</strong> 小さなスペースでも設置可能、店頭で折りたたみ操作をデモンストレーション</p>
+        <button class="close-modal text-red-600 hover:text-white">閉じる</button>
+    </div>
+    
+    <div class="modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 p-6 rounded-lg w-80 z-50" id="electric-dumbbell">
+        <h3 class="text-red-600 text-xl font-bold mb-2">電動調節ダンベル</h3>
+        <p class="text-white mb-1"><strong>材質:</strong> チタン合金+ABS樹脂</p>
+        <p class="text-white mb-1"><strong>価格:</strong> ¥65,000</p>
+        <p class="text-white mb-4"><strong>体験案内:</strong> ワンタッチで重量調節可能</p>
+        <button class="close-modal text-red-600 hover:text-white">閉じる</button>
+    </div>
+    
+    <div class="modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 p-6 rounded-lg w-80 z-50" id="yoga-set">
+        <h3 class="text-red-600 text-xl font-bold mb-2">ヨガエクササイズセット</h3>
+        <p class="text-white mb-1"><strong>材質:</strong> 天然ゴム+コットン</p>
+        <p class="text-white mb-1"><strong>価格:</strong> ¥12,500</p>
+        <p class="text-white mb-4"><strong>体験案内:</strong> 初心者向けヨガレッスンを随時開催</p>
+        <button class="close-modal text-red-600 hover:text-white">閉じる</button>
+    </div>
+    
+    <!-- 表单提交确认弹窗 -->
+    <div class="modal fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-90 p-8 rounded-lg w-80 z-50 text-center" id="submitConfirm">
+        <div class="text-red-600 text-4xl mb-4">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2 text-white">送信完了</h3>
+        <p class="text-white mb-6">お問い合わせありがとうございます。担当者より近日中にご連絡いたします。</p>
+        <button class="close-modal bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">OK</button>
+    </div>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scroll');
+            } else {
+                nav.classList.remove('nav-scroll');
+            }
+        });
+        
+        // 移动端菜单切换
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // 侧边栏切换功能
+        const categoryToggle = document.getElementById('categoryToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const closeSidebar = document.getElementById('closeSidebar');
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            document.body.classList.toggle('overflow-hidden');
+        }
+        
+        categoryToggle.addEventListener('click', toggleSidebar);
+        closeSidebar.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+        
+        // 产品弹窗功能
+        const dots = document.querySelectorAll('[data-modal]');
+        const modals = document.querySelectorAll('.modal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        
+        dots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                const modalId = this.getAttribute('data-modal');
+                modals.forEach(modal => {
+                    if (modal.id === modalId) {
+                        modal.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                modals.forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            });
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', function(event) {
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+        
+        // 配送方式选择
+        const deliveryOptions = document.querySelectorAll('.delivery-option');
+        
+        deliveryOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                deliveryOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // 表单提交
+        const submitForm = document.getElementById('submitForm');
+        const submitConfirm = document.getElementById('submitConfirm');
+        
+        submitForm.addEventListener('click', function() {
+            submitConfirm.classList.add('active');
+        });
+        
+        // 分类筛选功能
+        const categoryItems = document.querySelectorAll('.category-item');
+        
+        categoryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                categoryItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 这里可以添加实际的筛选逻辑
+                const category = this.getAttribute('data-category');
+                console.log('筛选分类:', category);
+                
+                // 关闭侧边栏
+                toggleSidebar();
+            });
+        });
+        
+        // 业务卡片展开/收起功能
+        const businessCards = document.querySelectorAll('.business-card');
+        
+        businessCards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+        
+        // 图片轮播功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            let currentIndex = 0;
+            const slideInterval = 2000; // 每张图片显示2秒，5张共10秒
+            
+            function showSlide(index) {
+                // 隐藏所有幻灯片
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                // 隐藏所有指示器
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+                
+                // 显示当前幻灯片和指示器
+                slides[index].classList.add('active');
+                indicators[index].classList.add('active');
+            }
+            
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slides.length;
+                showSlide(currentIndex);
+            }
+            
+            // 设置自动轮播
+            let interval = setInterval(nextSlide, slideInterval);
+            
+            // 点击指示器切换幻灯片
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', function() {
+                    clearInterval(interval);
+                    currentIndex = index;
+                    showSlide(currentIndex);
+                    interval = setInterval(nextSlide, slideInterval);
+                });
+            });
+        });
+        
+        // 咨询表单弹窗功能
+        const consultationBtn = document.getElementById('consultationBtn');
+        const consultationOverlay = document.getElementById('consultationOverlay');
+        const closeConsultation = document.getElementById('closeConsultation');
+        const submitConsultation = document.getElementById('submitConsultation');
+        
+        // 打开弹窗
+        consultationBtn.addEventListener('click', function() {
+            consultationOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        });
+        
+        // 关闭弹窗
+        function closeModal() {
+            consultationOverlay.classList.remove('active');
+            document.body.style.overflow = ''; // 恢复背景滚动
+        }
+        
+        closeConsultation.addEventListener('click', closeModal);
+        consultationOverlay.addEventListener('click', function(e) {
+            if (e.target === consultationOverlay) {
+                closeModal();
+            }
+        });
+        
+        // 提交表单
+        submitConsultation.addEventListener('click', function() {
+            // 这里可以添加表单验证逻辑
+            closeModal();
+            submitConfirm.classList.add('active');
+        });
+    </script>
+</body>
+</html>
